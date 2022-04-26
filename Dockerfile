@@ -8,11 +8,11 @@ ENV HOME="/" \
 
 RUN install_packages python3
 
-ARG ASK_SONIC_REPO=https://github.com/srichter/asksonic.git
-ARG ASK_SONIC_BRANCH=master
-
 FROM base AS builder
 LABEL maintainer "laparca <laparca@laparca.es>"
+
+ARG ASK_SONIC_REPO=https://github.com/srichter/asksonic.git
+ARG ASK_SONIC_BRANCH=master
 
 ENV HOME="/" \
     OS_ARCH="amd64" \
@@ -29,6 +29,7 @@ RUN install_packages build-essential \
                      libssl-dev \
                      libffi-dev \
                      && \
+    echo "Cloning $ASK_SONIC_REPO branch $ASK_SONIC_BRANCH" && \
     git clone $ASK_SONIC_REPO /asksonic && \
     if [ -n "$ASK_SONIC_BRANCH" ]; then pushd /asksonic; git checkout "$ASK_SONIC_BRANCH"; fi && \
     pip3 install -r /asksonic/requirements.txt -t /asksonic/deps
